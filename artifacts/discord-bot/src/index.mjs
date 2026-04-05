@@ -1,4 +1,5 @@
 import { Client, GatewayIntentBits, Collection, REST, Routes, Events } from 'discord.js';
+import { handlePrefix } from './prefix.mjs';
 import { commands as moderationCommands } from './commands/moderation.mjs';
 import { commands as serverCommands } from './commands/server.mjs';
 import { commands as infoCommands } from './commands/info.mjs';
@@ -95,9 +96,17 @@ client.on(Events.InteractionCreate, async (interaction) => {
   }
 });
 
-// Message AutoMod
+// Message handler — prefix commands + AutoMod
 client.on(Events.MessageCreate, async (message) => {
   if (!message.guild || message.author.bot) return;
+
+  // Run prefix commands first (skip automod on command messages)
+  if (message.content.startsWith('!')) {
+    await handlePrefix(message, client).catch(err => console.error('Prefix error:', err.message));
+    return;
+  }
+
+  // AutoMod on regular messages
   await runAutomod(message, client);
 });
 
