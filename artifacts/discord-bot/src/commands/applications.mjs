@@ -58,9 +58,9 @@ export const commands = [
       .setName('apply')
       .setDescription('Apply for a staff position')
       .addStringOption(o => o.setName('role').setDescription('Role to apply for').setRequired(true)
-        .addChoices(ROLE_TYPES.map(r => ({ name: r, value: r }))))
+        .addChoices(...ROLE_TYPES.map(r => ({ name: r, value: r }))))
       .addStringOption(o => o.setName('tier').setDescription('Tier to apply for').setRequired(true)
-        .addChoices(TIERS.map(t => ({ name: t, value: t })))),
+        .addChoices(...TIERS.map(t => ({ name: t, value: t })))),
     async execute(interaction) {
       const roleType = interaction.options.getString('role');
       const tier = interaction.options.getString('tier');

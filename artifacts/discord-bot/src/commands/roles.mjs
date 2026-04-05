@@ -185,9 +185,9 @@ export const commands = [
       .setDescription('Assign a staff role to a member')
       .addUserOption(o => o.setName('user').setDescription('Member').setRequired(true))
       .addStringOption(o => o.setName('type').setDescription('Role type').setRequired(true)
-        .addChoices(ROLE_HIERARCHY.map(r => ({ name: r.type, value: r.type }))))
+        .addChoices(...ROLE_HIERARCHY.map(r => ({ name: r.type, value: r.type }))))
       .addStringOption(o => o.setName('tier').setDescription('Tier').setRequired(true)
-        .addChoices(['Chief', 'Head', 'Senior', 'Junior'].map(t => ({ name: t, value: t }))))
+        .addChoices(...['Chief', 'Head', 'Senior', 'Junior'].map(t => ({ name: t, value: t }))))
       .setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles),
     async execute(interaction, client) {
       const target = interaction.options.getMember('user');
@@ -215,9 +215,9 @@ export const commands = [
       .setDescription('Remove a staff role from a member')
       .addUserOption(o => o.setName('user').setDescription('Member').setRequired(true))
       .addStringOption(o => o.setName('type').setDescription('Role type').setRequired(true)
-        .addChoices(ROLE_HIERARCHY.map(r => ({ name: r.type, value: r.type }))))
+        .addChoices(...ROLE_HIERARCHY.map(r => ({ name: r.type, value: r.type }))))
       .addStringOption(o => o.setName('tier').setDescription('Tier').setRequired(true)
-        .addChoices(['Chief', 'Head', 'Senior', 'Junior'].map(t => ({ name: t, value: t }))))
+        .addChoices(...['Chief', 'Head', 'Senior', 'Junior'].map(t => ({ name: t, value: t }))))
       .setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles),
     async execute(interaction) {
       const target = interaction.options.getMember('user');
@@ -244,9 +244,9 @@ export const commands = [
       .setDescription('Promote a staff member to the next tier')
       .addUserOption(o => o.setName('user').setDescription('Member to promote').setRequired(true))
       .addStringOption(o => o.setName('type').setDescription('Role type').setRequired(true)
-        .addChoices(ROLE_HIERARCHY.map(r => ({ name: r.type, value: r.type }))))
+        .addChoices(...ROLE_HIERARCHY.map(r => ({ name: r.type, value: r.type }))))
       .addStringOption(o => o.setName('from_tier').setDescription('Current tier').setRequired(true)
-        .addChoices(['Junior', 'Senior', 'Head'].map(t => ({ name: t, value: t }))))
+        .addChoices(...['Junior', 'Senior', 'Head'].map(t => ({ name: t, value: t }))))
       .setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles),
     async execute(interaction, client) {
       const target = interaction.options.getMember('user');
@@ -283,9 +283,9 @@ export const commands = [
       .setDescription('Demote a staff member to the previous tier')
       .addUserOption(o => o.setName('user').setDescription('Member to demote').setRequired(true))
       .addStringOption(o => o.setName('type').setDescription('Role type').setRequired(true)
-        .addChoices(ROLE_HIERARCHY.map(r => ({ name: r.type, value: r.type }))))
+        .addChoices(...ROLE_HIERARCHY.map(r => ({ name: r.type, value: r.type }))))
       .addStringOption(o => o.setName('from_tier').setDescription('Current tier').setRequired(true)
-        .addChoices(['Senior', 'Head', 'Chief'].map(t => ({ name: t, value: t }))))
+        .addChoices(...['Senior', 'Head', 'Chief'].map(t => ({ name: t, value: t }))))
       .addStringOption(o => o.setName('reason').setDescription('Reason'))
       .setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles),
     async execute(interaction, client) {
