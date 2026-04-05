@@ -70,12 +70,12 @@ export const commands = [
         .setTitle(`Apply for ${tier} ${roleType}`);
 
       const ageInput = new TextInputBuilder().setCustomId('age').setLabel('How old are you?').setStyle(TextInputStyle.Short).setRequired(true).setMaxLength(10);
-      const tzInput = new TextInputBuilder().setCustomId('timezone').setLabel('What is your timezone? (e.g. EST, GMT+2)').setStyle(TextInputStyle.Short).setRequired(true).setMaxLength(20);
-      const expInput = new TextInputBuilder().setCustomId('experience').setLabel('Describe your previous mod/staff experience').setStyle(TextInputStyle.Paragraph).setRequired(true).setMaxLength(1000);
+      const tzInput = new TextInputBuilder().setCustomId('timezone').setLabel('Your timezone (e.g. EST, GMT+2)').setStyle(TextInputStyle.Short).setRequired(true).setMaxLength(20);
+      const expInput = new TextInputBuilder().setCustomId('experience').setLabel('Previous mod/staff experience').setStyle(TextInputStyle.Paragraph).setRequired(true).setMaxLength(1000);
       const whyInput = new TextInputBuilder().setCustomId('why').setLabel('Why do you want this role?').setStyle(TextInputStyle.Paragraph).setRequired(true).setMaxLength(1000);
       const scenarioInput = new TextInputBuilder()
         .setCustomId('scenario')
-        .setLabel('A member is spamming and being rude. What do you do?')
+        .setLabel('A spammer is being rude. What do you do?')
         .setStyle(TextInputStyle.Paragraph).setRequired(true).setMaxLength(1000);
 
       modal.addComponents(
