@@ -3,6 +3,8 @@ import { handlePrefix } from './prefix.mjs';
 import { commands as moderationCommands } from './commands/moderation.mjs';
 import { commands as serverCommands } from './commands/server.mjs';
 import { commands as infoCommands } from './commands/info.mjs';
+import { commands as applicationCommands, handleApplicationModal } from './commands/applications.mjs';
+import { commands as roleCommands } from './commands/roles.mjs';
 import { getSettings, getExpiredMutes, removeMute } from './database.mjs';
 import { sendLog } from './logger.mjs';
 import { runAutomod, checkRaid } from './automod.mjs';
@@ -14,7 +16,7 @@ if (!TOKEN) {
   process.exit(1);
 }
 
-const allCommands = [...moderationCommands, ...serverCommands, ...infoCommands];
+const allCommands = [...moderationCommands, ...serverCommands, ...infoCommands, ...applicationCommands, ...roleCommands];
 
 const client = new Client({
   intents: [
@@ -76,8 +78,14 @@ client.once(Events.ClientReady, async (readyClient) => {
   }, 30000);
 });
 
-// Slash command handler
+// Interaction handler (slash commands + modals)
 client.on(Events.InteractionCreate, async (interaction) => {
+  // Modal submissions (applications)
+  if (interaction.isModalSubmit()) {
+    await handleApplicationModal(interaction, client).catch(err => console.error('Modal error:', err.message));
+    return;
+  }
+
   if (!interaction.isChatInputCommand()) return;
 
   const command = client.commands.get(interaction.commandName);

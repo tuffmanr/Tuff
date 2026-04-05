@@ -72,6 +72,33 @@ db.exec(`
     user_id TEXT NOT NULL,
     joined_at INTEGER NOT NULL DEFAULT (unixepoch())
   );
+
+  CREATE TABLE IF NOT EXISTS applications (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    guild_id TEXT NOT NULL,
+    user_id TEXT NOT NULL,
+    role_type TEXT NOT NULL,
+    tier TEXT NOT NULL,
+    age TEXT NOT NULL,
+    timezone TEXT NOT NULL,
+    experience TEXT NOT NULL,
+    why TEXT NOT NULL,
+    scenario TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'pending',
+    reviewer_id TEXT,
+    review_reason TEXT,
+    created_at INTEGER NOT NULL DEFAULT (unixepoch()),
+    reviewed_at INTEGER
+  );
+
+  CREATE TABLE IF NOT EXISTS guild_roles (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    guild_id TEXT NOT NULL,
+    role_type TEXT NOT NULL,
+    tier TEXT NOT NULL,
+    role_id TEXT NOT NULL,
+    UNIQUE(guild_id, role_type, tier)
+  );
 `);
 
 function toPlain(row) {
@@ -191,6 +218,59 @@ export function logJoin(guildId, userId) {
 export function getRecentJoins(guildId, seconds) {
   const since = Math.floor(Date.now() / 1000) - seconds;
   return toPlainAll(db.prepare('SELECT * FROM join_log WHERE guild_id = ? AND joined_at >= ?').all(guildId, since));
+}
+
+// Applications
+export function createApplication(guildId, userId, roleType, tier, answers) {
+  // Check for existing pending application
+  const existing = toPlain(db.prepare(
+    'SELECT id FROM applications WHERE guild_id = ? AND user_id = ? AND status = ?'
+  ).get(guildId, userId, 'pending'));
+  if (existing) return { error: 'You already have a pending application.' };
+
+  db.prepare(`
+    INSERT INTO applications (guild_id, user_id, role_type, tier, age, timezone, experience, why, scenario)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `).run(guildId, userId, roleType, tier, answers.age, answers.timezone, answers.experience, answers.why, answers.scenario);
+
+  return { success: true };
+}
+
+export function getApplication(id) {
+  return toPlain(db.prepare('SELECT * FROM applications WHERE id = ?').get(id));
+}
+
+export function getPendingApplications(guildId) {
+  return toPlainAll(db.prepare("SELECT * FROM applications WHERE guild_id = ? AND status = 'pending' ORDER BY created_at ASC").all(guildId));
+}
+
+export function getUserApplications(guildId, userId) {
+  return toPlainAll(db.prepare('SELECT * FROM applications WHERE guild_id = ? AND user_id = ? ORDER BY created_at DESC').all(guildId, userId));
+}
+
+export function reviewApplication(id, reviewerId, status, reason) {
+  db.prepare(`
+    UPDATE applications SET status = ?, reviewer_id = ?, review_reason = ?, reviewed_at = unixepoch()
+    WHERE id = ?
+  `).run(status, reviewerId, reason ?? null, id);
+  return getApplication(id);
+}
+
+// Guild roles
+export function saveGuildRole(guildId, roleType, tier, roleId) {
+  db.prepare(`
+    INSERT INTO guild_roles (guild_id, role_type, tier, role_id)
+    VALUES (?, ?, ?, ?)
+    ON CONFLICT(guild_id, role_type, tier) DO UPDATE SET role_id = excluded.role_id
+  `).run(guildId, roleType, tier, roleId);
+}
+
+export function getGuildRole(guildId, roleType, tier) {
+  return toPlain(db.prepare('SELECT * FROM guild_roles WHERE guild_id = ? AND role_type = ? AND tier = ?').get(guildId, roleType, tier));
+}
+
+export function getAllGuildRoles(guildId) {
+  return toPlainAll(db.prepare('SELECT * FROM guild_roles WHERE guild_id = ?').all(guildId));
 }
 
 export default db;
