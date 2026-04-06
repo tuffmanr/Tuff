@@ -1,0 +1,17 @@
+{
+  "name": "safe-modbot",
+  "version": "1.0.0",
+  "type": "module",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "start": "node --experimental-sqlite src/keepalive.mjs"
+  },
+  "dependencies": {
+    "@discordjs/builders": "^1.10.1",
+    "@discordjs/rest": "^2.5.0",
+    "discord-api-types": "^0.37.119",
+    "discord.js": "^14.18.0"
+  }
+}
