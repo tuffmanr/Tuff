@@ -1,5 +1,11 @@
 // Auto-restart wrapper — respawns the bot process if it crashes
 import { spawn } from 'child_process';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const BOT_DIR = join(__dirname, '..');
+const INDEX_PATH = join(__dirname, 'index.mjs');
 
 const MAX_RESTARTS = 100;
 const RESTART_DELAY_MS = 5000;
@@ -9,9 +15,10 @@ let restarts = 0;
 function start() {
   console.log(`[Keepalive] Starting bot (attempt ${restarts + 1})...`);
 
-  const proc = spawn('node', ['--experimental-sqlite', 'src/index.mjs'], {
+  const proc = spawn('node', ['--experimental-sqlite', INDEX_PATH], {
     stdio: 'inherit',
     env: process.env,
+    cwd: BOT_DIR,
   });
 
   proc.on('exit', (code, signal) => {

@@ -5,7 +5,7 @@ version = "1.0.0"
 id = "discord-bot"
 
 [[services]]
-localPort = 3001
+localPort = 3000
 name = "Discord Bot"
 paths = ["/bot"]
 
@@ -15,10 +15,10 @@ run = "pnpm --filter @workspace/discord-bot run dev"
 [services.production]
 
 [services.production.run]
-args = ["node", "--experimental-sqlite", "src/keepalive.mjs"]
+args = ["node", "artifacts/discord-bot/src/keepalive.mjs"]
 
 [services.production.run.env]
-PORT = "3001"
+PORT = "3000"
 NODE_ENV = "production"
 
 [services.production.health.startup]
