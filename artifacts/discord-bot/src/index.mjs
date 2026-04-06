@@ -1,4 +1,5 @@
 import { Client, GatewayIntentBits, Collection, REST, Routes, Events } from 'discord.js';
+import { createServer } from 'http';
 import { handlePrefix } from './prefix.mjs';
 import { commands as moderationCommands } from './commands/moderation.mjs';
 import { commands as serverCommands } from './commands/server.mjs';
@@ -9,6 +10,18 @@ import { getSettings, getExpiredMutes, removeMute } from './database.mjs';
 import { sendLog } from './logger.mjs';
 import { runAutomod, checkRaid } from './automod.mjs';
 import { dmUser, modEmbed, MOD_COLORS } from './utils.mjs';
+
+// Health-check HTTP server — required for Replit vm deployment
+const PORT = parseInt(process.env.PORT) || 3000;
+createServer((req, res) => {
+  if (req.url === '/healthz') {
+    res.writeHead(200);
+    res.end('OK');
+  } else {
+    res.writeHead(200);
+    res.end('SAFE Bot is running.');
+  }
+}).listen(PORT, () => console.log(`[Health] HTTP server listening on port ${PORT}`));
 
 const TOKEN = process.env.DISCORD_TOKEN;
 if (!TOKEN) {

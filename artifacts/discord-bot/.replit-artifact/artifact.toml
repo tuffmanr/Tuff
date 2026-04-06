@@ -1,0 +1,25 @@
+kind = "api"
+previewPath = "/bot"
+title = "Discord Moderation Bot"
+version = "1.0.0"
+id = "discord-bot"
+
+[[services]]
+localPort = 3001
+name = "Discord Bot"
+paths = ["/bot"]
+
+[services.development]
+run = "pnpm --filter @workspace/discord-bot run dev"
+
+[services.production]
+
+[services.production.run]
+args = ["node", "--experimental-sqlite", "src/keepalive.mjs"]
+
+[services.production.run.env]
+PORT = "3001"
+NODE_ENV = "production"
+
+[services.production.health.startup]
+path = "/healthz"
