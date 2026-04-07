@@ -12,6 +12,4 @@ RUN mkdir -p /app/data
 
 ENV NODE_ENV=production
 
-VOLUME ["/app/data"]
-
 CMD ["node", "src/keepalive.mjs"]
